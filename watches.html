@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHRONOS — Luxury Timepieces</title>
+  <meta name="description" content="CHRONOS — Precision luxury watches crafted for those who master time itself." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --silver: #c8cfd8;
+      --silver-light: #e8ecf0;
+      --chrome: #a0aab8;
+      --deep: #05070a;
+      --deep2: #090d12;
+      --accent: #4a90d9;
+      --accent2: #64b5f6;
+      --text-dim: rgba(200,207,216,0.5);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--deep);
+      color: var(--silver);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* LOADER */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--deep);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; transition: all 0.8s ease; }
+    .loader-ring {
+      width: 80px; height: 80px;
+      border: 1px solid rgba(200,207,216,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loader-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 300; letter-spacing: 0.4em;
+      color: var(--silver-light);
+      margin-top: 2rem;
+      animation: glow 2s ease-in-out infinite;
+    }
+    .loader-sub {
+      font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--accent); margin-top: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes glow {
+      0%,100%{ text-shadow: 0 0 20px rgba(74,144,217,0.3); }
+      50%{ text-shadow: 0 0 60px rgba(74,144,217,0.7), 0 0 100px rgba(74,144,217,0.3); }
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.5rem 5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(5,7,10,0.9);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(74,144,217,0.12);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 300;
+      letter-spacing: 0.4em; color: var(--silver-light);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 500; transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent2); }
+    .nav-btn {
+      padding: 0.6rem 2rem;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent); text-decoration: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+      font-weight: 500; transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { background: var(--accent); color: var(--deep); }
+
+    /* HERO */
+    #hero-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 0;
+      pointer-events: none;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+      position: relative; z-index: 10;
+    }
+    .hero-eyebrow {
+      font-size: 0.65rem; letter-spacing: 0.6em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 1s ease 2.5s forwards;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 300; line-height: 0.9;
+      letter-spacing: 0.05em;
+      opacity: 0; animation: fadeUp 1s ease 2.7s forwards;
+    }
+    .hero-title .line2 {
+      display: block; font-style: italic;
+      background: linear-gradient(135deg, var(--silver-light), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-tagline {
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      color: var(--text-dim); max-width: 450px;
+      line-height: 1.9; margin-top: 1.5rem; letter-spacing: 0.05em;
+      opacity: 0; animation: fadeUp 1s ease 2.9s forwards;
+    }
+    .hero-ctas {
+      display: flex; gap: 1.5rem; margin-top: 3rem;
+      opacity: 0; animation: fadeUp 1s ease 3.1s forwards;
+    }
+    .btn-primary {
+      padding: 1rem 3rem;
+      background: var(--accent);
+      color: var(--deep); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+      font-weight: 600; transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .btn-primary::before {
+      content:''; position: absolute; inset: 0;
+      background: var(--accent2); transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+    }
+    .btn-primary:hover::before { transform: scaleX(1); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-outline {
+      padding: 1rem 3rem;
+      border: 1px solid rgba(200,207,216,0.3);
+      color: var(--silver); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+      font-weight: 500; transition: all 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-scroll-hint {
+      position: absolute; bottom: 3rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+      opacity: 0; animation: fadeUp 1s ease 3.4s forwards;
+    }
+    .hero-scroll-hint span {
+      font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .scroll-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100%{ transform: translateY(0); opacity:1; }
+      50%{ transform: translateY(12px); opacity:0.3; }
+    }
+    @keyframes fadeUp {
+      from{ opacity:0; transform: translateY(30px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section { position: relative; z-index: 10; }
+
+    /* WATCH SHOWCASE */
+    .showcase-section {
+      min-height: 120vh;
+      background: linear-gradient(to bottom, transparent, var(--deep2) 20%, var(--deep2) 80%, transparent);
+      padding: 8rem 8%;
+    }
+    .showcase-header { text-align: center; margin-bottom: 6rem; }
+    .section-tag {
+      font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem; display: block;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 300; line-height: 1.05;
+    }
+    .section-title em { font-style: italic; color: var(--accent2); }
+
+    /* WATCHES GRID */
+    .watches-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+    }
+    .watch-card {
+      position: relative; overflow: hidden;
+      aspect-ratio: 0.75; cursor: pointer;
+      background: var(--deep2);
+    }
+    .watch-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,7,10,0.98) 25%, rgba(5,7,10,0.2) 60%, transparent);
+      z-index: 2;
+      transition: opacity 0.4s;
+    }
+    .watch-canvas { position: absolute; inset: 0; z-index: 1; }
+    .watch-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem; z-index: 3;
+      transform: translateY(15px); transition: transform 0.4s ease;
+    }
+    .watch-card:hover .watch-info { transform: translateY(0); }
+    .watch-series {
+      font-size: 0.55rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .watch-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 300; margin-top: 0.3rem;
+    }
+    .watch-detail {
+      font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem;
+      opacity: 0; transition: opacity 0.4s ease 0.1s;
+    }
+    .watch-card:hover .watch-detail { opacity: 1; }
+    .watch-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; color: var(--accent2);
+      margin-top: 0.5rem;
+    }
+    .watch-btn {
+      display: inline-block; margin-top: 1rem;
+      padding: 0.6rem 1.8rem;
+      border: 1px solid var(--accent);
+      color: var(--accent); text-decoration: none;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: all 0.3s;
+      opacity: 0; transition: opacity 0.4s ease 0.15s, background 0.3s, color 0.3s;
+    }
+    .watch-card:hover .watch-btn { opacity: 1; }
+    .watch-btn:hover { background: var(--accent); color: var(--deep); }
+
+    /* FEATURES / CRAFTSMANSHIP */
+    .craft-section {
+      padding: 10rem 8%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8rem;
+      align-items: center;
+    }
+    #craft-canvas {
+      width: 100%; height: 550px;
+    }
+    .craft-content {}
+    .craft-list { margin-top: 3rem; }
+    .craft-item {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.5rem 0; border-bottom: 1px solid rgba(200,207,216,0.1);
+    }
+    .craft-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; color: var(--accent); min-width: 40px;
+      font-style: italic; line-height: 1;
+    }
+    .craft-title {
+      font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600;
+    }
+    .craft-desc {
+      font-size: 0.85rem; color: var(--text-dim); line-height: 1.8; margin-top: 0.3rem;
+    }
+
+    /* STATS */
+    .stats-section {
+      padding: 6rem 8%;
+      background: linear-gradient(135deg, rgba(74,144,217,0.05), transparent, rgba(74,144,217,0.03));
+      text-align: center;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 3rem; max-width: 1000px; margin: 0 auto;
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300;
+      color: var(--accent2); line-height: 1;
+    }
+    .stat-unit {
+      display: inline; font-size: clamp(1.2rem, 2vw, 1.8rem);
+      color: var(--accent);
+    }
+    .stat-lbl {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 0.5rem;
+    }
+
+    /* COLLECTIONS */
+    .collection-section {
+      padding: 8rem 8%;
+    }
+    #collection-canvas {
+      width: 100%; height: 600px; margin: 3rem 0;
+    }
+    .collection-row {
+      display: flex; gap: 2rem; margin-top: 1rem;
+    }
+    .collection-pill {
+      padding: 0.6rem 2rem;
+      border: 1px solid rgba(200,207,216,0.2);
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s;
+      color: var(--text-dim);
+    }
+    .collection-pill.active, .collection-pill:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(74,144,217,0.08);
+    }
+
+    /* TESTIOMONIALS */
+    .reviews-section {
+      padding: 8rem 8%; background: var(--deep2);
+      text-align: center;
+    }
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      margin-top: 4rem;
+    }
+    .review-card {
+      padding: 3rem 2.5rem;
+      background: rgba(200,207,216,0.03);
+      border: 1px solid rgba(200,207,216,0.08);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .review-card:hover {
+      border-color: rgba(74,144,217,0.3);
+      transform: translateY(-8px);
+    }
+    .review-stars { color: var(--accent2); font-size: 1.2rem; letter-spacing: 0.2em; }
+    .review-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; line-height: 1.7;
+      color: var(--silver-light); margin-top: 1.5rem; font-style: italic;
+    }
+    .review-author {
+      margin-top: 1.5rem; font-size: 0.7rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .review-author strong { color: var(--accent); font-weight: 500; }
+
+    /* NEWSLETTER */
+    .newsletter-section {
+      padding: 8rem 8%; text-align: center;
+      background: radial-gradient(ellipse at 50% 50%, rgba(74,144,217,0.08), transparent 70%);
+    }
+    .newsletter-form {
+      display: flex; gap: 0; max-width: 500px; margin: 3rem auto 0;
+    }
+    .newsletter-form input {
+      flex: 1; padding: 1rem 1.5rem;
+      background: rgba(200,207,216,0.05);
+      border: 1px solid rgba(200,207,216,0.2);
+      border-right: none;
+      color: var(--silver); font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; outline: none; transition: border-color 0.3s;
+    }
+    .newsletter-form input:focus { border-color: var(--accent); }
+    .newsletter-form input::placeholder { color: var(--text-dim); }
+    .newsletter-form button {
+      padding: 1rem 2rem; background: var(--accent);
+      border: none; color: var(--deep);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 600; cursor: pointer; transition: background 0.3s;
+    }
+    .newsletter-form button:hover { background: var(--accent2); }
+
+    /* FOOTER */
+    footer {
+      padding: 4rem 8%;
+      border-top: 1px solid rgba(74,144,217,0.12);
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem; font-weight: 300; letter-spacing: 0.4em;
+    }
+    .footer-tagline { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.7; }
+    .footer-col h4 {
+      font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col a {
+      display: block; color: var(--text-dim); text-decoration: none;
+      font-size: 0.85rem; margin-bottom: 0.7rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--accent2); }
+    .footer-bottom {
+      padding: 1.5rem 8%;
+      border-top: 1px solid rgba(200,207,216,0.05);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.1em; }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .watches-grid { grid-template-columns: 1fr; }
+      .craft-section { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      footer { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-brand">CHRONOS</div>
+  <div class="loader-sub">Precision · Luxury · Legacy</div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">CHRON<span>OS</span></a>
+  <ul class="nav-links">
+    <li><a href="#showcase">Collection</a></li>
+    <li><a href="#craft">Craftsmanship</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#newsletter">Boutique</a></li>
+  </ul>
+  <a href="#showcase" class="nav-btn">Explore Now</a>
+</nav>
+
+<!-- HERO CANVAS -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Swiss Crafted &nbsp;·&nbsp; 1972 &nbsp;·&nbsp; Ultra Precision</p>
+  <h1 class="hero-title">
+    MASTER<br/>
+    <span class="line2">Time &amp; Space</span>
+  </h1>
+  <p class="hero-tagline">Each CHRONOS timepiece is a testament to uncompromising precision, hand-assembled by our Swiss master watchmakers over 200+ hours.</p>
+  <div class="hero-ctas">
+    <a href="#showcase" class="btn-primary"><span>Discover Collection</span></a>
+    <a href="#craft" class="btn-outline">Our Story</a>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- WATCH SHOWCASE -->
+<section class="showcase-section" id="showcase">
+  <div class="showcase-header reveal">
+    <span class="section-tag">2024 Collection</span>
+    <h2 class="section-title">Icons of <em>Precision</em></h2>
+  </div>
+  <div class="watches-grid">
+    <div class="watch-card reveal">
+      <canvas class="watch-canvas" id="watch-canvas-1"></canvas>
+      <div class="watch-info">
+        <div class="watch-series">Stellar Series</div>
+        <div class="watch-name">Stellar GMT Pro</div>
+        <div class="watch-detail">Automatic · 42mm · Sapphire Crystal · 300m Water Resistance</div>
+        <div class="watch-price">₹ 4,85,000</div>
+        <a href="#" class="watch-btn">View Details</a>
+      </div>
+    </div>
+    <div class="watch-card reveal">
+      <canvas class="watch-canvas" id="watch-canvas-2"></canvas>
+      <div class="watch-info">
+        <div class="watch-series">Noir Edition</div>
+        <div class="watch-name">Shadow Chronograph</div>
+        <div class="watch-detail">Manual Wind · 40mm · DLC Titanium · Triple Complication</div>
+        <div class="watch-price">₹ 8,20,000</div>
+        <a href="#" class="watch-btn">View Details</a>
+      </div>
+    </div>
+    <div class="watch-card reveal">
+      <canvas class="watch-canvas" id="watch-canvas-3"></canvas>
+      <div class="watch-info">
+        <div class="watch-series">Heritage Limited</div>
+        <div class="watch-name">Perpetual Calendar XIX</div>
+        <div class="watch-detail">Perpetual Calendar · 38mm · Rose Gold · 50 pieces only</div>
+        <div class="watch-price">₹ 22,50,000</div>
+        <a href="#" class="watch-btn">View Details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRAFTSMANSHIP -->
+<section class="craft-section" id="craft">
+  <canvas id="craft-canvas" class="reveal"></canvas>
+  <div class="craft-content">
+    <div class="reveal">
+      <span class="section-tag">The Art of Making</span>
+      <h2 class="section-title">Crafted with<br/><em>200+ Hours</em></h2>
+      <p style="color:var(--text-dim); line-height:2; margin-top:1rem; font-size:0.9rem;">
+        Every CHRONOS timepiece begins as a sketch and evolves through hundreds of hours of meticulous Swiss craftsmanship — from hand-finishing each component to final quality inspection under 50× magnification.
+      </p>
+    </div>
+    <div class="craft-list">
+      <div class="craft-item reveal">
+        <div class="craft-num">01</div>
+        <div>
+          <div class="craft-title">Hand-Polished Cases</div>
+          <div class="craft-desc">Each case takes 8 hours to hand-polish, alternating between mirror and satin finishes for visual depth.</div>
+        </div>
+      </div>
+      <div class="craft-item reveal">
+        <div class="craft-num">02</div>
+        <div>
+          <div class="craft-title">In-House Movement</div>
+          <div class="craft-desc">Our Calibre CH-9 movement has 312 components assembled by a single watchmaker under 50× magnification.</div>
+        </div>
+      </div>
+      <div class="craft-item reveal">
+        <div class="craft-num">03</div>
+        <div>
+          <div class="craft-title">Sapphire Crystals</div>
+          <div class="craft-desc">Anti-reflective double-domed sapphire crystal with 99.9% UV filtering and 9H scratch hardness.</div>
+        </div>
+      </div>
+      <div class="craft-item reveal">
+        <div class="craft-num">04</div>
+        <div>
+          <div class="craft-title">COSC Certified</div>
+          <div class="craft-desc">Every movement is chronometer-certified to ±2 seconds per day precision standard by COSC.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section" id="heritage">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-num">52<span class="stat-unit">yr</span></div>
+      <div class="stat-lbl">Swiss Heritage</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">312</div>
+      <div class="stat-lbl">Movement Parts</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">200<span class="stat-unit">+</span></div>
+      <div class="stat-lbl">Hours per Watch</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num">18K<span class="stat-unit">+</span></div>
+      <div class="stat-lbl">Watches in Hands</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTION ORBIT -->
+<section class="collection-section">
+  <div class="reveal" style="text-align:center">
+    <span class="section-tag">Live Preview</span>
+    <h2 class="section-title"><em>360°</em> Watch Preview</h2>
+  </div>
+  <canvas id="collection-canvas"></canvas>
+  <div class="collection-row" style="justify-content:center">
+    <div class="collection-pill active" onclick="setWatchColor(0)">Steel</div>
+    <div class="collection-pill" onclick="setWatchColor(1)">Black DLC</div>
+    <div class="collection-pill" onclick="setWatchColor(2)">Rose Gold</div>
+    <div class="collection-pill" onclick="setWatchColor(3)">Midnight Blue</div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="reveal">
+    <span class="section-tag">Client Voices</span>
+    <h2 class="section-title">What Our <em>Clients</em> Say</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"The Stellar GMT Pro is beyond perfection. Every detail exudes quality. My colleagues stop me at every meeting to ask about it."</p>
+      <div class="review-author"><strong>Aditya R.</strong> &nbsp;·&nbsp; Mumbai, India</div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I've worn Rolex and Patek Philippe. CHRONOS surpasses them in finishing quality at a fraction of the cost. Truly world-class."</p>
+      <div class="review-author"><strong>Priya S.</strong> &nbsp;·&nbsp; Dubai, UAE</div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"The Perpetual Calendar XIX is a work of art. Limited to 50 pieces, mine feels genuinely special — a family heirloom already."</p>
+      <div class="review-author"><strong>Vikram M.</strong> &nbsp;·&nbsp; London, UK</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section" id="newsletter">
+  <div class="reveal">
+    <span class="section-tag">Private Access</span>
+    <h2 class="section-title">Join the <em>Inner Circle</em></h2>
+    <p style="color:var(--text-dim);margin-top:1rem;font-size:0.9rem;line-height:1.8">
+      Be the first to access limited editions, exclusive events, and private collector previews.
+    </p>
+  </div>
+  <div class="newsletter-form reveal">
+    <input type="email" placeholder="Your email address" />
+    <button type="button" onclick="subscribe(this)">Request Access</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">CHRONOS</div>
+    <p class="footer-tagline">Precision luxury timepieces crafted<br/>by Swiss master watchmakers since 1972.</p>
+    <p style="color:var(--text-dim);font-size:0.75rem;margin-top:1.5rem">📍 Geneva · Dubai · New Delhi</p>
+  </div>
+  <div class="footer-col">
+    <h4>Collections</h4>
+    <ul>
+      <li><a href="#">Stellar Series</a></li>
+      <li><a href="#">Noir Edition</a></li>
+      <li><a href="#">Heritage Limited</a></li>
+      <li><a href="#">Sport Collection</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <ul>
+      <li><a href="#">Our Atelier</a></li>
+      <li><a href="#">Craftsmanship</a></li>
+      <li><a href="#">Sustainability</a></li>
+      <li><a href="#">Careers</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Support</h4>
+    <ul>
+      <li><a href="#">Service Center</a></li>
+      <li><a href="#">Authenticity</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">WhatsApp</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p class="footer-copy">© 2024 Chronos Timepieces SA. All rights reserved.</p>
+  <p class="footer-copy">Geneva, Switzerland</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+// ── LOADER ─────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 2000);
+});
+
+// ── NAV ────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── REVEAL ─────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((en, i) => {
+    if (en.isIntersecting) setTimeout(() => en.target.classList.add('visible'), i * 100);
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── COLLECTION PILLS ─────────────────────────────────
+document.querySelectorAll('.collection-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.collection-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+  });
+});
+
+// ════════════════════════════════════════════════════════
+// HERO SCENE — 3D Watch ring + time particles
+// ════════════════════════════════════════════════════════
+(function heroScene() {
+  const canvas = document.getElementById('hero-canvas');
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 6);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Blue particles
+  const geo = new THREE.BufferGeometry();
+  const N = 2000;
+  const pos = new Float32Array(N * 3);
+  for (let i = 0; i < N * 3; i++) pos[i] = (Math.random() - 0.5) * 25;
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+    size: 0.04, color: 0x4a90d9, transparent: true, opacity: 0.6
+  })));
+
+  // Watch bezel ring
+  const bezel = new THREE.Mesh(
+    new THREE.TorusGeometry(2.2, 0.12, 32, 128),
+    new THREE.MeshStandardMaterial({ color: 0xa0aab8, metalness: 0.95, roughness: 0.05 })
+  );
+  scene.add(bezel);
+
+  // Inner torus (crystal)
+  const crystal = new THREE.Mesh(
+    new THREE.TorusGeometry(2, 0.02, 16, 128),
+    new THREE.MeshStandardMaterial({ color: 0x4a90d9, metalness: 0.5, roughness: 0.1, transparent: true, opacity: 0.6 })
+  );
+  scene.add(crystal);
+
+  // Hour markers (small cylinders on ring)
+  for (let i = 0; i < 12; i++) {
+    const marker = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.04, 0.25, 8),
+      new THREE.MeshStandardMaterial({ color: 0xe8ecf0, metalness: 0.9, roughness: 0.1 })
+    );
+    const a = (i / 12) * Math.PI * 2;
+    marker.position.set(Math.cos(a) * 2, Math.sin(a) * 2, 0);
+    marker.rotation.z = -a + Math.PI / 2;
+    scene.add(marker);
+  }
+
+  // Watch hands
+  const handMat = new THREE.MeshStandardMaterial({ color: 0xe8ecf0, metalness: 0.9, roughness: 0.1 });
+  const hourHand = new THREE.Mesh(new THREE.BoxGeometry(0.07, 1.1, 0.05), handMat);
+  hourHand.position.y = 0.55;
+  const minuteHand = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.7, 0.05), handMat);
+  minuteHand.position.y = 0.85;
+  const secHand = new THREE.Mesh(
+    new THREE.BoxGeometry(0.025, 1.9, 0.05),
+    new THREE.MeshStandardMaterial({ color: 0x4a90d9, metalness: 0.9, roughness: 0.1 })
+  );
+  secHand.position.y = 0.95;
+  const handGroup = new THREE.Group();
+  handGroup.add(hourHand, minuteHand, secHand);
+  scene.add(handGroup);
+
+  // Center dot
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(0.12, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0x4a90d9, metalness: 0.9, roughness: 0.1 })
+  ));
+
+  scene.add(new THREE.AmbientLight(0xc8d8f0, 0.5));
+  const dL = new THREE.DirectionalLight(0xffffff, 2); dL.position.set(5, 5, 5); scene.add(dL);
+  const pL = new THREE.PointLight(0x4a90d9, 3, 15); pL.position.set(-3, 3, 3); scene.add(pL);
+  const pL2 = new THREE.PointLight(0x64b5f6, 1.5, 10); pL2.position.set(3, -2, 2); scene.add(pL2);
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    bezel.rotation.y = t * 0.1 + mouseX * 0.3;
+    bezel.rotation.x = mouseY * 0.2;
+    crystal.rotation.y = t * 0.1;
+    handGroup.rotation.y = t * 0.1 + mouseX * 0.3;
+    handGroup.rotation.x = mouseY * 0.2;
+    // Animate hands in real time
+    const now = new Date();
+    const s = now.getSeconds() + now.getMilliseconds() / 1000;
+    const m = now.getMinutes() + s / 60;
+    const h = (now.getHours() % 12) + m / 60;
+    secHand.rotation.z = -(s / 60) * Math.PI * 2;
+    minuteHand.rotation.z = -(m / 60) * Math.PI * 2;
+    hourHand.rotation.z = -(h / 12) * Math.PI * 2;
+    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.04;
+    camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.04;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// ════════════════════════════════════════════════════════
+// WATCH CARD SCENES
+// ════════════════════════════════════════════════════════
+function createWatchCard(canvasId, caseColor, dialColor, accentColor) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+  camera.position.set(0, 1.5, 6);
+  camera.lookAt(0, 0, 0);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const caseMat = new THREE.MeshStandardMaterial({ color: caseColor, metalness: 0.95, roughness: 0.05 });
+
+  // Watch case (cylinder)
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.35, 64), caseMat);
+  scene.add(body);
+  // Bezel rim
+  const bezel = new THREE.Mesh(
+    new THREE.TorusGeometry(1.4, 0.07, 16, 64),
+    new THREE.MeshStandardMaterial({ color: caseColor, metalness: 1, roughness: 0.01 })
+  );
+  bezel.rotation.x = Math.PI / 2; bezel.position.y = 0.17; scene.add(bezel);
+
+  // Watch dial
+  const dial = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.3, 1.3, 0.02, 64),
+    new THREE.MeshStandardMaterial({ color: dialColor, metalness: 0.2, roughness: 0.7 })
+  );
+  dial.position.y = 0.18; scene.add(dial);
+
+  // Hour markers
+  for (let i = 0; i < 12; i++) {
+    const mk = new THREE.Mesh(
+      new THREE.BoxGeometry(0.04, 0.25, 0.02),
+      new THREE.MeshStandardMaterial({ color: accentColor, metalness: 0.8, roughness: 0.2 })
+    );
+    const a = (i / 12) * Math.PI * 2;
+    mk.position.set(Math.sin(a) * 1.1, 0.2, Math.cos(a) * 1.1);
+    mk.rotation.y = -a;
+    scene.add(mk);
+  }
+
+  // Hands
+  const hMat = new THREE.MeshStandardMaterial({ color: accentColor, metalness: 0.9, roughness: 0.1 });
+  const hh = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.7, 0.04), hMat);
+  hh.position.set(0, 0.22, 0); scene.add(hh);
+  const mh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1.0, 0.03), hMat);
+  mh.position.set(0, 0.22, 0); scene.add(mh);
+  const sh = new THREE.Mesh(new THREE.BoxGeometry(0.015, 1.1, 0.015),
+    new THREE.MeshStandardMaterial({ color: 0xff4444, metalness: 0.8 }));
+  sh.position.set(0, 0.22, 0); scene.add(sh);
+
+  // Crown
+  const crown = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.08, 0.08, 0.25, 16),
+    caseMat
+  );
+  crown.rotation.z = Math.PI / 2; crown.position.set(1.47, 0.1, 0); scene.add(crown);
+
+  // Strap
+  const strapMat = new THREE.MeshStandardMaterial({ color: 0x1a110a, roughness: 0.9, metalness: 0 });
+  const topStrap = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 1.5), strapMat);
+  topStrap.position.set(0, -0.04, -1.4); scene.add(topStrap);
+  const botStrap = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 1.2), strapMat);
+  botStrap.position.set(0, -0.04, 1.35); scene.add(botStrap);
+
+  scene.add(new THREE.AmbientLight(0xecf0ff, 0.6));
+  const d = new THREE.DirectionalLight(0xffffff, 2.5); d.position.set(3, 5, 3); scene.add(d);
+  const p = new THREE.PointLight(accentColor, 2, 10); p.position.set(-2, 3, 2); scene.add(p);
+
+  const clock = new THREE.Clock();
+  let hovered = false;
+  const card = canvas.closest('.watch-card');
+  if (card) {
+    card.addEventListener('mouseenter', () => hovered = true);
+    card.addEventListener('mouseleave', () => hovered = false);
+  }
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    const speed = hovered ? 0.8 : 0.2;
+    body.rotation.y = t * speed;
+    dial.rotation.y = t * speed;
+    bezel.rotation.y = t * speed;
+    [hh, mh, sh, crown, topStrap, botStrap].forEach(o => o.rotation.y = t * speed);
+    // minute/sec hands
+    const s = t * 10; const m = t * 0.5;
+    sh.rotation.y = 0; sh.position.y = 0.22;
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+
+createWatchCard('watch-canvas-1', 0xb0bcc8, 0xfafafa, 0x4a90d9);
+createWatchCard('watch-canvas-2', 0x1a1a1a, 0x0a0a0a, 0x64b5f6);
+createWatchCard('watch-canvas-3', 0xb87333, 0x1a0a00, 0xf0c040);
+
+// ════════════════════════════════════════════════════════
+// CRAFT SCENE — Complex rotating mechanism
+// ════════════════════════════════════════════════════════
+(function craftScene() {
+  const canvas = document.getElementById('craft-canvas');
+  if (!canvas) return;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+  camera.position.set(0, 3, 7);
+  camera.lookAt(0, 0, 0);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const silver = new THREE.MeshStandardMaterial({ color: 0xa0aab8, metalness: 0.95, roughness: 0.05 });
+  const blue = new THREE.MeshStandardMaterial({ color: 0x4a90d9, metalness: 0.7, roughness: 0.2, emissive: 0x1a3a6a, emissiveIntensity: 0.3 });
+
+  // Main gear
+  const mainGear = new THREE.Group(); scene.add(mainGear);
+  mainGear.add(new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.15, 32, 64), silver));
+  for (let i = 0; i < 24; i++) {
+    const t = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.3, 0.15), silver);
+    const a = (i / 24) * Math.PI * 2;
+    t.position.set(Math.cos(a) * 1.95, Math.sin(a) * 1.95, 0);
+    t.rotation.z = a; mainGear.add(t);
+  }
+  mainGear.add(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.2, 32), blue));
+
+  // Secondary gear
+  const secGear = new THREE.Group(); scene.add(secGear);
+  secGear.position.set(2.8, 0, 0);
+  secGear.add(new THREE.Mesh(new THREE.TorusGeometry(1, 0.1, 32, 48), silver));
+  for (let i = 0; i < 14; i++) {
+    const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.22, 0.12), silver);
+    const a = (i / 14) * Math.PI * 2;
+    tooth.position.set(Math.cos(a) * 1.1, Math.sin(a) * 1.1, 0);
+    tooth.rotation.z = a; secGear.add(tooth);
+  }
+
+  // Orbiting gems (jewels in movement)
+  const jewels = new THREE.Group(); scene.add(jewels);
+  const jewelColors = [0xff1744, 0x4a90d9, 0x00e676, 0xff9100];
+  for (let i = 0; i < 4; i++) {
+    const j = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.12),
+      new THREE.MeshStandardMaterial({ color: jewelColors[i], metalness: 0.7, roughness: 0.1, emissive: jewelColors[i], emissiveIntensity: 0.5 })
+    );
+    const a = (i / 4) * Math.PI * 2;
+    j.position.set(Math.cos(a) * 1.2, Math.sin(a) * 1.2, 0.3);
+    jewels.add(j);
+  }
+
+  // Escapement wheel (torusknot)
+  const esc = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(0.5, 0.07, 80, 12, 2, 3),
+    new THREE.MeshStandardMaterial({ color: 0xa0aab8, metalness: 0.9, roughness: 0.05, emissive: 0x1a3a6a, emissiveIntensity: 0.1 })
+  );
+  esc.position.set(-2.5, 0, 0);
+  scene.add(esc);
+
+  scene.add(new THREE.AmbientLight(0xc8d8f0, 0.5));
+  const d = new THREE.DirectionalLight(0xffffff, 2); d.position.set(4, 4, 4); scene.add(d);
+  const p = new THREE.PointLight(0x4a90d9, 3, 15); p.position.set(-2, 3, 3); scene.add(p);
+
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    mainGear.rotation.z = t * 0.3;
+    secGear.rotation.z = -t * (1.8 / 1.0) * 0.3;
+    esc.rotation.x = t * 0.8; esc.rotation.y = t * 0.5;
+    jewels.rotation.z = t * 0.4;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// ════════════════════════════════════════════════════════
+// COLLECTION CANVAS — 360° Watch Showcase
+// ════════════════════════════════════════════════════════
+let collectionMeshColor;
+(function collectionScene() {
+  const canvas = document.getElementById('collection-canvas');
+  if (!canvas) return;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+  camera.position.set(0, 2, 7);
+  camera.lookAt(0, 0, 0);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const caseColors = [0xa0aab8, 0x1a1a1a, 0xb87333, 0x1a2a4a];
+  let currentColor = caseColors[0];
+  const caseMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.5, 1.5, 0.4, 64),
+    new THREE.MeshStandardMaterial({ color: currentColor, metalness: 0.95, roughness: 0.05 })
+  );
+  scene.add(caseMesh);
+
+  collectionMeshColor = (i) => {
+    caseMesh.material.color.setHex(caseColors[i]);
+    bezelMesh.material.color.setHex(caseColors[i]);
+    crownMesh.material.color.setHex(caseColors[i]);
+  };
+
+  const bezelMesh = new THREE.Mesh(
+    new THREE.TorusGeometry(1.5, 0.08, 32, 64),
+    new THREE.MeshStandardMaterial({ color: currentColor, metalness: 1, roughness: 0.01 })
+  );
+  bezelMesh.rotation.x = Math.PI / 2; bezelMesh.position.y = 0.2; scene.add(bezelMesh);
+
+  const crownMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.1, 0.1, 0.3, 16),
+    new THREE.MeshStandardMaterial({ color: currentColor, metalness: 0.95, roughness: 0.05 })
+  );
+  crownMesh.rotation.z = Math.PI / 2; crownMesh.position.set(1.58, 0.05, 0); scene.add(crownMesh);
+
+  const dialMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.38, 1.38, 0.02, 64),
+    new THREE.MeshStandardMaterial({ color: 0x060a10, metalness: 0.3, roughness: 0.7 })
+  );
+  dialMesh.position.y = 0.21; scene.add(dialMesh);
+
+  for (let i = 0; i < 12; i++) {
+    const mk = new THREE.Mesh(
+      new THREE.BoxGeometry(0.04, 0.22, 0.03),
+      new THREE.MeshStandardMaterial({ color: 0x64b5f6, metalness: 0.8 })
+    );
+    const a = (i / 12) * Math.PI * 2;
+    mk.position.set(Math.sin(a) * 1.15, 0.23, Math.cos(a) * 1.15);
+    mk.rotation.y = -a; scene.add(mk);
+  }
+
+  const strapMat = new THREE.MeshStandardMaterial({ color: 0x100a06, roughness: 0.9 });
+  scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.08, 1.6), strapMat), { position: new THREE.Vector3(0, -0.04, -1.5) }));
+  scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.08, 1.3), strapMat), { position: new THREE.Vector3(0, -0.04, 1.45) }));
+
+  scene.add(new THREE.AmbientLight(0xc8d8f0, 0.7));
+  const d = new THREE.DirectionalLight(0xffffff, 2.5); d.position.set(5, 5, 5); scene.add(d);
+  const p = new THREE.PointLight(0x4a90d9, 3, 10); p.position.set(-3, 3, 3); scene.add(p);
+
+  let isDragging = false, lastX = 0;
+  canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; });
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('mousemove', e => {
+    if (isDragging) {
+      const dx = e.clientX - lastX; lastX = e.clientX;
+      caseMesh.rotation.y += dx * 0.01;
+      bezelMesh.rotation.y += dx * 0.01;
+      dialMesh.rotation.y += dx * 0.01;
+    }
+  });
+
+  const clockC = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clockC.getElapsedTime();
+    if (!isDragging) {
+      caseMesh.rotation.y = t * 0.3;
+      bezelMesh.rotation.y = t * 0.3;
+      dialMesh.rotation.y = t * 0.3;
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+function setWatchColor(i) {
+  if (collectionMeshColor) collectionMeshColor(i);
+}
+
+// ── NEWSLETTER ────────────────────────────────────────
+function subscribe(btn) {
+  btn.textContent = '✓ Access Granted!';
+  btn.style.background = '#00e676';
+  setTimeout(() => {
+    btn.textContent = 'Request Access';
+    btn.style.background = '';
+  }, 3000);
+}
+</script>
+</body>
+</html>
